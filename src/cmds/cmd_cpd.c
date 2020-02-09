@@ -35,6 +35,7 @@ static struct argp_option cpd_options[] = {
   {"seed", TT_SEED, "SEED", 0, "random seed (default: system time)"},
   {"verbose", 'v', 0, 0, "turn on verbose output (default: no)"},
   {"stem", 's', "PATH", 0, "file stem for factorization output files (default: ./)"},
+  {"nncpd", 'n', 0, 0, "perform non-negative cpd"},
   { 0 }
 };
 
@@ -109,6 +110,9 @@ static error_t parse_cpd_opt(
     break;
   case TT_NOWRITE:
     args->write = 0;
+    break;
+  case 'n':
+    args->opts[SPLATT_OPTION_NNCPD] = 1;
     break;
   case 'r':
     args->nfactors = atoi(arg);

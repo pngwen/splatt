@@ -78,6 +78,23 @@ void splatt_free_kruskal(
  *****************************************************************************/
 
 /**
+* @ brief Enforce non-negativity on the matrix.  Values less that
+* 0 are replaced with 0.
+*
+* @param m The matrix to constrain.
+*/
+void nncpd_constraint(matrix_t *m)
+{
+  int i;
+
+  for(i=0; i<m->I * m->J; i++) {
+    if(m->vals[i] < 0.0) {
+      m->vals[i] = 0.0;
+    }
+  }
+}
+
+/**
 * @brief Resets serial and MPI timers that were activated during some CPD
 *        pre-processing.
 *
@@ -338,6 +355,11 @@ double cpd_als_iterate(
       mat_solve_normals(m, nmodes, aTa, mats[m],
           opts[SPLATT_OPTION_REGULARIZE]);
 #endif
+
+      /* apply non-negative constraints (if selected) */
+      if(opts[SPLATT_OPTION_NNCPD]) {
+        nncpd_constraint(mats[m]);
+      }
 
       /* normalize columns and extract lambda */
       if(it == 0) {
